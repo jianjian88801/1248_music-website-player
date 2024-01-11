@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xunmaw.music.dao.RankDao">
+
+<!--    /**-->
+<!--    * 查总分-->
+<!--    */-->
+    <select id="selectScoreSum" resultType="java.lang.Integer" parameterType="java.lang.Integer">
+        select COALESCE(sum(score),0) as score
+        from rank
+        where song_list_id = #{songListId}
+    </select>
+
+<!--    /**-->
+<!--    * 查总评分人数-->
+<!--    */-->
+    <select id="selectRankNum" resultType="java.lang.Integer" parameterType="java.lang.Integer">
+        select COALESCE(count(id),0) as num
+        from rank
+        where song_list_id = #{songListId}
+    </select>
+
+    <insert id="insert" parameterType="com.xunmaw.music.entity.Rank">
+          insert into rank (song_list_id,consumer_id,score) values (#{songListId},#{consumerId},#{score});
+    </insert>
+</mapper>

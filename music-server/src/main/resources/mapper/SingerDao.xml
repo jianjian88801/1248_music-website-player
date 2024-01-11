@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xunmaw.music.dao.SingerDao">
+
+    <resultMap type="com.xunmaw.music.entity.Singer" id="SingerMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="name" column="name" jdbcType="VARCHAR"/>
+        <result property="sex" column="sex" jdbcType="TINYINT"/>
+        <result property="pic" column="pic" jdbcType="VARCHAR"/>
+        <result property="birth" column="birth" jdbcType="VARCHAR"/>
+        <result property="location" column="location" jdbcType="VARCHAR"/>
+        <result property="introduction" column="introduction" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="SingerMap">
+        select
+          id, name, sex, pic, birth, location, introduction
+        from singer
+        where id = #{id}
+    </select>
+
+    <!--查询所有-->
+    <select id="findAll" resultMap="SingerMap">
+        select
+          id, name, sex, pic, birth, location, introduction
+        from singer
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="SingerMap">
+        select
+          id, name, sex, pic, birth, location, introduction
+        from singer
+        limit #{offset}, #{limit}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="SingerMap">
+        select
+        id, name, sex, pic, birth, location, introduction
+        from singer
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="name != null and name != ''">
+                and name = #{name}
+            </if>
+            <if test="sex != null">
+                and sex = #{sex}
+            </if>
+            <if test="pic != null and pic != ''">
+                and pic = #{pic}
+            </if>
+            <if test="birth != null">
+                and birth = #{birth}
+            </if>
+            <if test="location != null and location != ''">
+                and location = #{location}
+            </if>
+            <if test="introduction != null and introduction != ''">
+                and introduction = #{introduction}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into singer(name, sex, pic, birth, location, introduction)
+        values (#{name}, #{sex}, #{pic}, #{birth}, #{location}, #{introduction})
+    </insert>
+
+    <insert id="insertBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into singer(name, sex, pic, birth, location, introduction)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.name}, #{entity.sex}, #{entity.pic}, #{entity.birth}, #{entity.location}, #{entity.introduction})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into singer(name, sex, pic, birth, location, introduction)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.name}, #{entity.sex}, #{entity.pic}, #{entity.birth}, #{entity.location}, #{entity.introduction})
+        </foreach>
+        on duplicate key update
+        name = values(name) , sex = values(sex) , pic = values(pic) , birth = values(birth) , location =
+        values(location) , introduction = values(introduction)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update singer
+        <set>
+            <if test="name != null and name != ''">
+                name = #{name},
+            </if>
+            <if test="sex != null">
+                sex = #{sex},
+            </if>
+            <if test="pic != null and pic != ''">
+                pic = #{pic},
+            </if>
+            <if test="birth != null">
+                birth = #{birth},
+            </if>
+            <if test="location != null and location != ''">
+                location = #{location},
+            </if>
+            <if test="introduction != null and introduction != ''">
+                introduction = #{introduction},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from singer where id = #{id}
+    </delete>
+
+    <select id="singerOfName" resultMap="SingerMap" parameterType="java.lang.String">
+        select
+          id, name, sex, pic, birth, location, introduction
+        from singer
+        where name = #{name}
+    </select>
+
+    <select id="singerOfSex" resultMap="SingerMap" parameterType="java.lang.Integer">
+        select
+          id, name, sex, pic, birth, location, introduction
+        from singer
+        where sex = #{sex}
+    </select>
+
+</mapper>
+
